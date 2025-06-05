@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sqs/types"
 )
 
-const version = "0.1.0"
+const version = "v0.1.0"
 
 // global config variable
 var cfg config.Config

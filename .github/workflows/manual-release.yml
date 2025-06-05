@@ -1,0 +1,39 @@
+name: Manual Go Release
+
+on:
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  build-and-release:
+    name: Build and Publish Binary
+    runs-on: ubuntu-latest
+
+    env:
+      VERSION: v0.1.0
+      BINARY_NAME: cpfeedman
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22' # Use your Go version
+
+    - name: Build static Go binary
+      run: |
+        mkdir -p dist
+        go mod tidy
+        CGO_ENABLED=0 go build -tags netgo -ldflags '-w -s -extldflags "-static"' -o dist/cpfeedman cpfeedman.go
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.VERSION }}
+        name: Release ${{ env.VERSION }}
+        files: dist/${{ env.BINARY_NAME }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions: 
+      contents: write
