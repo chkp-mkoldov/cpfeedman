@@ -35,16 +35,16 @@ func NewSQSIn(queueUrl string) *SQSIn {
 }
 
 func (s *SQSIn) Listen() error {
-	fmt.Println("Starting SQS Client...")
+	// fmt.Println("Starting SQS Client...")
 
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
+		log.Fatalf("[SQS] unable to load SDK config, %v", err)
 	}
 
 	client := sqs.NewFromConfig(cfg)
 
-	fmt.Printf("SQS Client initialized with Queue URL: %s\n", s.QueueUrl)
+	fmt.Printf("[SQSIN] Client initialized with Queue URL: %s\n", s.QueueUrl)
 
 	ctx := context.TODO()
 
@@ -55,7 +55,7 @@ func (s *SQSIn) Listen() error {
 			AttributeNames:      []types.QueueAttributeName{"SentTimestamp"},
 		})
 		if err != nil {
-			log.Printf("error receiving message: %v", err)
+			log.Printf("[SQSIN] error receiving message: %v", err)
 			time.Sleep(5 * time.Second)
 			continue
 		}
@@ -65,7 +65,7 @@ func (s *SQSIn) Listen() error {
 		}
 
 		for _, msg := range output.Messages {
-			log.Printf("Received message: %s", aws.ToString(msg.Body))
+			log.Printf("[SQSIN] Received message: %s", aws.ToString(msg.Body))
 
 			// delegete to callback function if set
 			if s.OnMessage != nil {
@@ -78,9 +78,9 @@ func (s *SQSIn) Listen() error {
 				ReceiptHandle: msg.ReceiptHandle,
 			})
 			if err != nil {
-				log.Printf("failed to delete message: %v", err)
+				log.Printf("[SQSIN] failed to delete message: %v", err)
 			} else {
-				log.Printf("Deleted message ID: %s", aws.ToString(msg.MessageId))
+				log.Printf("[SQSIN] Deleted message ID: %s", aws.ToString(msg.MessageId))
 			}
 		}
 	}

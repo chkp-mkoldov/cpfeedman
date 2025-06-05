@@ -56,7 +56,7 @@ func NewCpApiFromConfig(cfg *config.Config) *CpApi {
 func (cpApi *CpApi) ApiCallWithLogin(cmd string, payload *map[string]interface{}, headers *map[string]string) (string, error) {
 
 	if cpApi.CheckPointSid == "" || time.Now().After(cpApi.CheckPointSidExpiresAt) {
-		fmt.Println("SID is empty or expired, logging in...")
+		fmt.Println("[CPAPI] SID is empty or expired, logging in...")
 		_, err := cpApi.Login()
 		if err != nil {
 			return "", fmt.Errorf("failed to login to Check Point API: %w", err)
@@ -88,7 +88,7 @@ func (cpApi *CpApi) ApiCall(cmd string, payload *map[string]interface{}, headers
 
 	if cpApi.CheckPointSid != "" {
 		req.Header.Add("X-chkp-sid", cpApi.CheckPointSid)
-		fmt.Println("Using SID:", cpApi.CheckPointSid)
+		// fmt.Println("Using SID:", cpApi.CheckPointSid)
 	}
 
 	if headers != nil {
@@ -154,9 +154,9 @@ func (cpApi *CpApi) Login() (*LoginResponse, error) {
 		cpApi.CheckPointSid = loginResp.Sid
 		// add expiration time based on session timeout and current time, decrease by 5 minutes to allow for session expiration
 		cpApi.CheckPointSidExpiresAt = time.Now().Add(time.Duration(loginResp.SessionTimeout-5*60) * time.Second)
-		fmt.Println("Login successful, SID:", cpApi.CheckPointSid)
-		fmt.Println("Now:", time.Now())
-		fmt.Println("SID expires at:", cpApi.CheckPointSidExpiresAt)
+		// fmt.Println("Login successful, SID:", cpApi.CheckPointSid)
+		// fmt.Println("Now:", time.Now())
+		// fmt.Println("SID expires at:", cpApi.CheckPointSidExpiresAt)
 	}
 
 	return &loginResp, nil
