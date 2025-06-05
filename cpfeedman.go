@@ -19,11 +19,23 @@ var cfg config.Config
 // CP API client
 var cpApi *cpapi.CpApi
 
+var notifiedGateways []string = []string{
+	"gw10", // example gateway names, replace with actual gateway names
+	// "gw20",
+}
+
 // init configuration and more
 func init() {
 	// Load configuration from environment variables
 	cfg.LoadFromEnv()
 	cpApi = cpapi.NewCpApiFromConfig(&cfg)
+
+	if cfg.CpFeedManNotifiedGateways != nil && len(cfg.CpFeedManNotifiedGateways) > 0 {
+		notifiedGateways = cfg.CpFeedManNotifiedGateways
+		fmt.Fprintf(os.Stdout, "[Config] Notified gateways: %v\n", notifiedGateways)
+	} else {
+		fmt.Fprintln(os.Stderr, "[Config] No notified gateways configured. Using default:", notifiedGateways)
+	}
 
 }
 
@@ -130,7 +142,7 @@ func main() {
 
 					// TODO rate limiting
 					// TODO feed map - ask only relevant gateways (vs all)
-					res, err := cpApi.KickFeed(feedName, gwNames)
+					res, err := cpApi.KickFeed(feedName, notifiedGateways)
 					if err != nil {
 						fmt.Fprintf(os.Stderr, "[SQS] Error kicking feed '%s': %v\n", feedName, err)
 						continue

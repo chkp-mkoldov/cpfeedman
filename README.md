@@ -13,6 +13,7 @@ Configuration is done using environment variables. The following variables are r
 
 | Purpose                | Env Var                | Description                                                      |
 |------------------------|------------------------|------------------------------------------------------------------|
+| Notification scope | `CPFEEDMAN_NOTIFIED_GATEWAYS` | Comma-separated list of Security Gateways to notify about updates - e.g. "gw10,gw20" |
 | AWS SQS         | `CPFEEDMAN_SQS_ENDPOINT`        | URL of the AWS SQS queue to consume notifications from           |
 | AWS Authentication         | `AWS_ACCESS_KEY_ID`    | AWS access key for authentication                                |
 | AWS Authentication         | `AWS_SECRET_ACCESS_KEY`| AWS secret key for authentication                                |
