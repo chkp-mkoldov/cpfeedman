@@ -17,6 +17,8 @@ function send_message() {
 }
 
 while true; do
+    send_message "dev_app1_web"
+    sleep 1
     send_message "quiccloud"
     sleep 2
 
